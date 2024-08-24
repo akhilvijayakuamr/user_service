@@ -13,134 +13,104 @@ from django.conf import settings
 
 
 
-class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
-    
-    # Register user view
+# User Register
 
-    def CreateUser(self, request, context):
-        email = request.email
-        username = request.username
-        
-        data = {
-            'email': request.email,
-            'username': request.username,
-            'full_name': request.full_name,
-            'password': request.password
+def user_register(data, context):
+    email = data.get('email')
+    username = data.get('username')
+
+    
+    if CustomUser.objects.filter(email=email).exists():
+        context.abort(StatusCode.ALREADY_EXISTS, "Email Already Exists")
+
+    if CustomUser.objects.filter(username=username).exists():
+        context.abort(StatusCode.ALREADY_EXISTS, "Username Already Exists")
+
+
+    serializer = CustomUserSerializer(data=data)
+    try:
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+
+
+        send_otp_mail(context, serializer.data['email'])
+
+        return {
+            'message': 'Registration Successful, Check Email For Verification',
+            'error': '',
+            'id': user.id,
+            'email': user.email
         }
-        
-        
-        if CustomUser.objects.filter(email=email).exists():
-            context.abort(StatusCode.ALREADY_EXISTS, "Email Already Exists")
 
-        if CustomUser.objects.filter(username=username).exists():
-            context.abort(StatusCode.ALREADY_EXISTS, "Username Already Exists")
-            
-        serializer = CustomUserSerializer(data=data)
+    except Exception as e:
+        context.abort(StatusCode.INTERNAL, f"An unexpected error occurred: {str(e)}")
         
         
-        try:
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            send_otp_mail(context, serializer.data['email'])
-            
-            
-            return user_service_pb2.CreateUserResponse(
-                message='Registration Successful, Check Email For Verification',
-                error=''  
-            )
-            
+ 
+ # OTP verification       
         
-        except Exception as e:
-            context.abort(StatusCode.INTERNAL, f"An unexpected error occurred: {str(e)}")
-            
-            
-            
-    # OTP verify view      
-            
-    def VerifyOtp(self, request, context):
         
-        data = {
-            'email' : request.email,
-            'otp' : request.otp
-        }
-        
-        try:
-            serializer = VerifyUserSerializer(data=data)
-            if serializer.is_valid():
-                email = data['email']
-                otp = data['otp']
-                
-                try:
-                    user = CustomUser.objects.get(email=email).first()
-                except CustomUser.DoesNotExist:
-                    context.abort(StatusCode.NOT_FOUND, "User not found")
-                    
-                if user.otp != otp:
-                    context.abort(StatusCode.INVALID_ARGUMENT, "Invalid otp")
-                    
-                user.is_verified = True
-                user.otp = None
-                user.save()
-                
-                return user_service_pb2.VerifyOtpResponse(
-                    message="Account Verified",
-                    error=''
-                )
-            else:
-                errors = serializer.errors
-                context.abort(StatusCode.INVALID_ARGUMENT, f"Validation Error: {errors}")
-                
-        except Exception as e:
-            context.abort(StatusCode.INTERNAL, f"Internal Server Error: {str(e)}")
-            
-            
-            
-    # Login user view
+def otp_verification(data, context):
+    
+    serializer = VerifyUserSerializer(data=data)
+    if not serializer.is_valid():
+        errors = serializer.errors
+        context.abort(StatusCode.INVALID_ARGUMENT, f"Validation Error: {errors}")
     
     
-    def LoginUser(self, request, context):
-        email = request.email
-        password = request.password
-        provider = request.provider
-        
-        user = CustomUser.objects.get(email=email).first()
-        
-        if user is None:     
-            context.abort(StatusCode.NOT_FOUND, "User not found")
-            
-        if not user.is_verified:
-            context.abort(StatusCode.PERMISSION_DENIED, "User not varified")
-            
-        if user.is_superuser == True:
-            context.abort(StatusCode.PERMISSION_DENIED, "Admin Can't access")
-            
-        if provider != 'google' and not user.check_password(password):
-            context.abort(StatusCode.INVALID_ARGUMENT, 'Incorrect Password')
-            
-        payload = {
-            'id': user.id,  
-            'exp': timezone.now() + timezone.timedelta(minutes=60),
-            'iat': timezone.now(),
-        }
-            
-        token = jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
-        print("token",token)
-        
-        return user_service_pb2.LoginResponse(
-            id = str(user.id)
-            email = user.email
-            jwt = str(token)
-            message = "Login Success"
-        )
-        
-                
+    validated_data = serializer.validated_data
+    email = validated_data.get('email')
+    otp = validated_data.get('otp')
+
+    try:
+        user = CustomUser.objects.get(email=email)
+    except CustomUser.DoesNotExist:
+        context.abort(StatusCode.NOT_FOUND, "User not found")
+
+    if user.otp != otp:
+        context.abort(StatusCode.INVALID_ARGUMENT, "Invalid OTP")
+
+    user.is_verified = True
+    user.otp = None
+    user.save()
+
+    return {
+        'message': "Account Verified",
+        'error': '',
+        'email': user.email
+    }
+    
+    
+    
+# Authentication Login
+    
+def authenticate_user(email, password, provider, context):
+    
+    try:
+        user = CustomUser.objects.get(email=email)
+    except CustomUser.DoesNotExist:
+        context.abort(StatusCode.NOT_FOUND, "User not found")
+
+    
+    if not user.is_verified:
+        context.abort(StatusCode.PERMISSION_DENIED, "User not verified")
+
+    
+    if user.is_superuser:
+        context.abort(StatusCode.PERMISSION_DENIED, "Admin can't access")
+
+    
+    if provider != 'google' and not user.check_password(password):
+        context.abort(StatusCode.INVALID_ARGUMENT, "Incorrect password")
 
 
-        
-        
-    
-        
-        
-    
-        
-        
+    payload = {
+        'id': user.id,
+        'exp': timezone.now() + timezone.timedelta(days=2),
+        'iat': timezone.now(),
+    }
+    token = jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
+
+    return user, token
+
+

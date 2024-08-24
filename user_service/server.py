@@ -9,7 +9,7 @@ from concurrent import futures
 from proto import user_service_pb2
 from proto import user_service_pb2_grpc
 import time
-from .views import UserServiceServicer
+from .service import UserServiceServicer
 
 
 server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
