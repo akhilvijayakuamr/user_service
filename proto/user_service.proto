@@ -7,6 +7,9 @@ service UserService {
     rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
     rpc VerifyOtp(VerifyOtpRequest) returns (VerifyOtpResponse);
     rpc LoginUser(LoginUserRequest) returns (LoginResponse);
+    rpc LoginAdmin(LoginAdminRequest) returns (LoginAdminResponse);
+    rpc ResendOtp(ResendOtpRequest) returns (ResendOtpResponse);
+    rpc UserList(UserListRequest) returns (UserListResponse);
 }
 
 
@@ -18,9 +21,11 @@ message CreateUserRequest {
  
 }
 
+
 message CreateUserResponse {
     string message = 1;
     string error = 2;
+
 }
 
 message VerifyOtpRequest{
@@ -29,6 +34,15 @@ message VerifyOtpRequest{
 }
 
 message VerifyOtpResponse{
+    string message = 1;
+    string error = 2;
+}
+
+message ResendOtpRequest{
+    string email = 1;
+}
+
+message ResendOtpResponse{
     string message = 1;
     string error = 2;
 }
@@ -45,5 +59,34 @@ message LoginResponse{
     string email = 2;
     string jwt = 3;
     string message = 4;
+}
+
+
+message LoginAdminRequest{
+    string email = 1;
+    string password = 2;
+}
+
+
+message LoginAdminResponse{
+    string jwt = 1;
+    string message = 2;
+}
+
+
+message User {
+    int32 id = 1;
+    string username = 2;
+    string full_name = 3;
+    string email = 4;
+    bool is_active = 5;
+}
+
+
+message UserListRequest{}
+
+
+message UserListResponse{
+    repeated User users = 1;
 }
 

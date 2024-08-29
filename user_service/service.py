@@ -1,6 +1,8 @@
 from proto import user_service_pb2
 from proto import user_service_pb2_grpc
-from user_auth.views import user_register, otp_verification, authenticate_user
+from user_auth.views import user_register, otp_verification, authenticate_user, recreate_otp
+from admin_auth.views import authenticate_admin, all_users
+
 
 
 
@@ -18,14 +20,14 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
             'full_name': request.full_name,
             'password': request.password
         }
+        
+        print(data)
 
         response_data = user_register(data, context)
-
+        
         return user_service_pb2.CreateUserResponse(
             message=response_data['message'],
-            error=response_data['error'],
-            id=response_data['id'],
-            email=response_data['email']
+            error=response_data['error']
         )
         
         
@@ -42,7 +44,21 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
 
         return user_service_pb2.VerifyOtpResponse(
             message=response_data['message'],
-            error=response_data['error']
+            error=response_data['error'],
+        )
+        
+        
+    # Resend OTP
+    
+    
+    def ResendOtp(self, request, context):
+        
+        email = request.email
+        response_data = recreate_otp(email, context)
+ 
+        return user_service_pb2.ResendOtpResponse(
+            message=response_data['message'],
+            error=response_data['error'],
         )
         
         
@@ -61,3 +77,28 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
             jwt=str(token),
             message="Login Success"
         )
+        
+        
+    # Admin Login
+    
+    
+    def LoginAdmin(self, request, context):
+        email = request.email
+        password = request.password
+        
+        token = authenticate_admin(email, password, context)
+        print(token)
+        return user_service_pb2.LoginAdminResponse(
+            jwt = str(token),
+            message = "Login Success"
+        )
+        
+        
+    def UserList(self, request, context):
+        users = all_users(context)
+        user_list = [user_service_pb2.User(id=user.id,
+                                           username=user.username,
+                                           full_name=user.full_name,
+                                           email=user.email,
+                                           is_active=user.is_active) for user in users]
+        return user_service_pb2.UserListResponse(users=user_list)

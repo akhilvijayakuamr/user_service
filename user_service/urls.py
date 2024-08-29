@@ -19,5 +19,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include("user_auth.urls")), #-> Connect User service urls 
+    path('', include("user_auth.urls")), #-> Connect User_auth app urls 
+    path('', include("admin_auth.urls")), #-> Connect Admin_auth app urls
+    
 ]

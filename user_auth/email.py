@@ -12,6 +12,7 @@ def send_otp_mail(context, email):
     sender_email = settings.EMAIL_HOST_USER
     receiver_email = email
     password_email = settings.EMAIL_HOST_PASSWORD
+    print("top: ", otp)
 
     subject = "Your OTP for Registration"
     message = f"Your OTP is: {otp}"

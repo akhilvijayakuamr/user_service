@@ -54,6 +54,21 @@ class UserServiceStub(object):
                 request_serializer=user__service__pb2.LoginUserRequest.SerializeToString,
                 response_deserializer=user__service__pb2.LoginResponse.FromString,
                 _registered_method=True)
+        self.LoginAdmin = channel.unary_unary(
+                '/user_service.UserService/LoginAdmin',
+                request_serializer=user__service__pb2.LoginAdminRequest.SerializeToString,
+                response_deserializer=user__service__pb2.LoginAdminResponse.FromString,
+                _registered_method=True)
+        self.ResendOtp = channel.unary_unary(
+                '/user_service.UserService/ResendOtp',
+                request_serializer=user__service__pb2.ResendOtpRequest.SerializeToString,
+                response_deserializer=user__service__pb2.ResendOtpResponse.FromString,
+                _registered_method=True)
+        self.UserList = channel.unary_unary(
+                '/user_service.UserService/UserList',
+                request_serializer=user__service__pb2.UserListRequest.SerializeToString,
+                response_deserializer=user__service__pb2.UserListResponse.FromString,
+                _registered_method=True)
 
 
 class UserServiceServicer(object):
@@ -77,6 +92,24 @@ class UserServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def LoginAdmin(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ResendOtp(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UserList(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_UserServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -94,6 +127,21 @@ def add_UserServiceServicer_to_server(servicer, server):
                     servicer.LoginUser,
                     request_deserializer=user__service__pb2.LoginUserRequest.FromString,
                     response_serializer=user__service__pb2.LoginResponse.SerializeToString,
+            ),
+            'LoginAdmin': grpc.unary_unary_rpc_method_handler(
+                    servicer.LoginAdmin,
+                    request_deserializer=user__service__pb2.LoginAdminRequest.FromString,
+                    response_serializer=user__service__pb2.LoginAdminResponse.SerializeToString,
+            ),
+            'ResendOtp': grpc.unary_unary_rpc_method_handler(
+                    servicer.ResendOtp,
+                    request_deserializer=user__service__pb2.ResendOtpRequest.FromString,
+                    response_serializer=user__service__pb2.ResendOtpResponse.SerializeToString,
+            ),
+            'UserList': grpc.unary_unary_rpc_method_handler(
+                    servicer.UserList,
+                    request_deserializer=user__service__pb2.UserListRequest.FromString,
+                    response_serializer=user__service__pb2.UserListResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -177,6 +225,87 @@ class UserService(object):
             '/user_service.UserService/LoginUser',
             user__service__pb2.LoginUserRequest.SerializeToString,
             user__service__pb2.LoginResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def LoginAdmin(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/LoginAdmin',
+            user__service__pb2.LoginAdminRequest.SerializeToString,
+            user__service__pb2.LoginAdminResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ResendOtp(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/ResendOtp',
+            user__service__pb2.ResendOtpRequest.SerializeToString,
+            user__service__pb2.ResendOtpResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UserList(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/UserList',
+            user__service__pb2.UserListRequest.SerializeToString,
+            user__service__pb2.UserListResponse.FromString,
             options,
             channel_credentials,
             insecure,

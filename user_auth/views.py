@@ -28,18 +28,18 @@ def user_register(data, context):
 
 
     serializer = CustomUserSerializer(data=data)
+    
     try:
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
+        serializer.save()
 
 
         send_otp_mail(context, serializer.data['email'])
+        print(serializer.data)
 
         return {
             'message': 'Registration Successful, Check Email For Verification',
             'error': '',
-            'id': user.id,
-            'email': user.email
         }
 
     except Exception as e:
@@ -81,13 +81,31 @@ def otp_verification(data, context):
     }
     
     
-    
-# Authentication Login
-    
-def authenticate_user(email, password, provider, context):
-    
+# Resend otp
+
+def recreate_otp(email, context):
+    print(email)
     try:
         user = CustomUser.objects.get(email=email)
+        if not user:
+            context.abort(StatusCode.NOT_FOUND, "Please Register again")
+        send_otp_mail(context, email)
+        
+        return {
+            'message': 'Check Email For Verification',
+            'error': '',
+        }
+    except CustomUser.DoesNotExist:
+        context.abort(StatusCode.NOT_FOUND, "Please Register again")
+      
+    
+# Authentication User
+    
+def authenticate_user(email, password, provider, context):
+    print(email)
+    try:
+        user = CustomUser.objects.get(email=email)
+        print(user)
     except CustomUser.DoesNotExist:
         context.abort(StatusCode.NOT_FOUND, "User not found")
 
