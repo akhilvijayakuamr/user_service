@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import os
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-=7fnrb)dck@wc)ka-n70x1o8ya*+p)1&d#fbv6$2+0su9z+9)('
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', cast=bool, default=True)
 
 ALLOWED_HOSTS = []
 
@@ -40,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'user_auth',    #-> Register User auth app
     'rest_framework',   #-> Register Rest framework
+    'storages', #-> Storage s3 bucket
+   
 ]
 
 MIDDLEWARE = [
@@ -79,11 +83,11 @@ WSGI_APPLICATION = 'user_service.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'userservice',  # database name
-        'USER': 'community',       # PostgreSQL user
-        'PASSWORD': 'community',  # PostgreSQL password
-        'HOST': 'localhost',    # Database host (usually localhost)
-        'PORT': '5432',         # PostgreSQL port
+        'NAME': config('DB_NAME'),  # database name
+        'USER': config('DB_USER'),       # PostgreSQL user
+        'PASSWORD': config('DB_PASSWORD'),  # PostgreSQL password
+        'HOST': config('DB_HOST'),    # Database host (usually localhost)
+        'PORT': config('DB_PORT'),         # PostgreSQL port
     }
 }
 
@@ -124,9 +128,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_URL = '/media/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+
+
+    # aws settings
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME')
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -136,14 +150,17 @@ AUTH_USER_MODEL = 'user_auth.CustomUser'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'gamersgt84@gmail.com'
-EMAIL_HOST_PASSWORD = 'omleyluxnmmdxpnp'
-EMAIL_DEBUG = True
-
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_DEBUG = config('EMAIL_DEBUG', cast=bool)
 
 
 
 AUTHENTICATION_BACKENDS = [
     'rest_framework_simplejwt.authentication.JWTAuthentication',
+
 ]
+
+
+

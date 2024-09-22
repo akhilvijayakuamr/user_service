@@ -35,6 +35,13 @@ class VerifyUserSerializer(serializers.Serializer):
     otp = serializers.CharField()
     
     
+
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+    provider = serializers.CharField(required=False, allow_blank=True)
+    
         
         
         

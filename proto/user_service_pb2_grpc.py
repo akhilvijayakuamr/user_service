@@ -54,6 +54,11 @@ class UserServiceStub(object):
                 request_serializer=user__service__pb2.LoginUserRequest.SerializeToString,
                 response_deserializer=user__service__pb2.LoginResponse.FromString,
                 _registered_method=True)
+        self.GoogleUser = channel.unary_unary(
+                '/user_service.UserService/GoogleUser',
+                request_serializer=user__service__pb2.GoogleUserRequest.SerializeToString,
+                response_deserializer=user__service__pb2.GoogleUserResponse.FromString,
+                _registered_method=True)
         self.LoginAdmin = channel.unary_unary(
                 '/user_service.UserService/LoginAdmin',
                 request_serializer=user__service__pb2.LoginAdminRequest.SerializeToString,
@@ -68,6 +73,51 @@ class UserServiceStub(object):
                 '/user_service.UserService/UserList',
                 request_serializer=user__service__pb2.UserListRequest.SerializeToString,
                 response_deserializer=user__service__pb2.UserListResponse.FromString,
+                _registered_method=True)
+        self.Autherization = channel.unary_unary(
+                '/user_service.UserService/Autherization',
+                request_serializer=user__service__pb2.AuthRequest.SerializeToString,
+                response_deserializer=user__service__pb2.AuthResponse.FromString,
+                _registered_method=True)
+        self.BlockUnblockUser = channel.unary_unary(
+                '/user_service.UserService/BlockUnblockUser',
+                request_serializer=user__service__pb2.BlockUnBlockRequest.SerializeToString,
+                response_deserializer=user__service__pb2.BlockUnBlockResponse.FromString,
+                _registered_method=True)
+        self.ProfileData = channel.unary_unary(
+                '/user_service.UserService/ProfileData',
+                request_serializer=user__service__pb2.ProfileDataRequest.SerializeToString,
+                response_deserializer=user__service__pb2.ProfileDataResponse.FromString,
+                _registered_method=True)
+        self.ProfileUpdate = channel.unary_unary(
+                '/user_service.UserService/ProfileUpdate',
+                request_serializer=user__service__pb2.ProfileUpdateRequest.SerializeToString,
+                response_deserializer=user__service__pb2.ProfileUpdateResponse.FromString,
+                _registered_method=True)
+        self.ForgotEmail = channel.unary_unary(
+                '/user_service.UserService/ForgotEmail',
+                request_serializer=user__service__pb2.ForgoteEmailRequest.SerializeToString,
+                response_deserializer=user__service__pb2.ForgoteEmailResponse.FromString,
+                _registered_method=True)
+        self.ChangePassword = channel.unary_unary(
+                '/user_service.UserService/ChangePassword',
+                request_serializer=user__service__pb2.ChangePasswordRequest.SerializeToString,
+                response_deserializer=user__service__pb2.ChangePasswordResponse.FromString,
+                _registered_method=True)
+        self.PostProfile = channel.unary_unary(
+                '/user_service.UserService/PostProfile',
+                request_serializer=user__service__pb2.PostProfileRequest.SerializeToString,
+                response_deserializer=user__service__pb2.PostProfileResponse.FromString,
+                _registered_method=True)
+        self.PostUniqueData = channel.unary_unary(
+                '/user_service.UserService/PostUniqueData',
+                request_serializer=user__service__pb2.PostUniqueDataRequest.SerializeToString,
+                response_deserializer=user__service__pb2.PostUniqueDataResponse.FromString,
+                _registered_method=True)
+        self.CommentUniqueData = channel.unary_unary(
+                '/user_service.UserService/CommentUniqueData',
+                request_serializer=user__service__pb2.CommentUniqueDataRequest.SerializeToString,
+                response_deserializer=user__service__pb2.CommentUniqueDataResponse.FromString,
                 _registered_method=True)
 
 
@@ -92,6 +142,12 @@ class UserServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GoogleUser(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def LoginAdmin(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -105,6 +161,60 @@ class UserServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def UserList(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def Autherization(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def BlockUnblockUser(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ProfileData(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ProfileUpdate(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ForgotEmail(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ChangePassword(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PostProfile(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PostUniqueData(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CommentUniqueData(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -128,6 +238,11 @@ def add_UserServiceServicer_to_server(servicer, server):
                     request_deserializer=user__service__pb2.LoginUserRequest.FromString,
                     response_serializer=user__service__pb2.LoginResponse.SerializeToString,
             ),
+            'GoogleUser': grpc.unary_unary_rpc_method_handler(
+                    servicer.GoogleUser,
+                    request_deserializer=user__service__pb2.GoogleUserRequest.FromString,
+                    response_serializer=user__service__pb2.GoogleUserResponse.SerializeToString,
+            ),
             'LoginAdmin': grpc.unary_unary_rpc_method_handler(
                     servicer.LoginAdmin,
                     request_deserializer=user__service__pb2.LoginAdminRequest.FromString,
@@ -142,6 +257,51 @@ def add_UserServiceServicer_to_server(servicer, server):
                     servicer.UserList,
                     request_deserializer=user__service__pb2.UserListRequest.FromString,
                     response_serializer=user__service__pb2.UserListResponse.SerializeToString,
+            ),
+            'Autherization': grpc.unary_unary_rpc_method_handler(
+                    servicer.Autherization,
+                    request_deserializer=user__service__pb2.AuthRequest.FromString,
+                    response_serializer=user__service__pb2.AuthResponse.SerializeToString,
+            ),
+            'BlockUnblockUser': grpc.unary_unary_rpc_method_handler(
+                    servicer.BlockUnblockUser,
+                    request_deserializer=user__service__pb2.BlockUnBlockRequest.FromString,
+                    response_serializer=user__service__pb2.BlockUnBlockResponse.SerializeToString,
+            ),
+            'ProfileData': grpc.unary_unary_rpc_method_handler(
+                    servicer.ProfileData,
+                    request_deserializer=user__service__pb2.ProfileDataRequest.FromString,
+                    response_serializer=user__service__pb2.ProfileDataResponse.SerializeToString,
+            ),
+            'ProfileUpdate': grpc.unary_unary_rpc_method_handler(
+                    servicer.ProfileUpdate,
+                    request_deserializer=user__service__pb2.ProfileUpdateRequest.FromString,
+                    response_serializer=user__service__pb2.ProfileUpdateResponse.SerializeToString,
+            ),
+            'ForgotEmail': grpc.unary_unary_rpc_method_handler(
+                    servicer.ForgotEmail,
+                    request_deserializer=user__service__pb2.ForgoteEmailRequest.FromString,
+                    response_serializer=user__service__pb2.ForgoteEmailResponse.SerializeToString,
+            ),
+            'ChangePassword': grpc.unary_unary_rpc_method_handler(
+                    servicer.ChangePassword,
+                    request_deserializer=user__service__pb2.ChangePasswordRequest.FromString,
+                    response_serializer=user__service__pb2.ChangePasswordResponse.SerializeToString,
+            ),
+            'PostProfile': grpc.unary_unary_rpc_method_handler(
+                    servicer.PostProfile,
+                    request_deserializer=user__service__pb2.PostProfileRequest.FromString,
+                    response_serializer=user__service__pb2.PostProfileResponse.SerializeToString,
+            ),
+            'PostUniqueData': grpc.unary_unary_rpc_method_handler(
+                    servicer.PostUniqueData,
+                    request_deserializer=user__service__pb2.PostUniqueDataRequest.FromString,
+                    response_serializer=user__service__pb2.PostUniqueDataResponse.SerializeToString,
+            ),
+            'CommentUniqueData': grpc.unary_unary_rpc_method_handler(
+                    servicer.CommentUniqueData,
+                    request_deserializer=user__service__pb2.CommentUniqueDataRequest.FromString,
+                    response_serializer=user__service__pb2.CommentUniqueDataResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -236,6 +396,33 @@ class UserService(object):
             _registered_method=True)
 
     @staticmethod
+    def GoogleUser(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/GoogleUser',
+            user__service__pb2.GoogleUserRequest.SerializeToString,
+            user__service__pb2.GoogleUserResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def LoginAdmin(request,
             target,
             options=(),
@@ -306,6 +493,249 @@ class UserService(object):
             '/user_service.UserService/UserList',
             user__service__pb2.UserListRequest.SerializeToString,
             user__service__pb2.UserListResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def Autherization(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/Autherization',
+            user__service__pb2.AuthRequest.SerializeToString,
+            user__service__pb2.AuthResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def BlockUnblockUser(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/BlockUnblockUser',
+            user__service__pb2.BlockUnBlockRequest.SerializeToString,
+            user__service__pb2.BlockUnBlockResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ProfileData(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/ProfileData',
+            user__service__pb2.ProfileDataRequest.SerializeToString,
+            user__service__pb2.ProfileDataResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ProfileUpdate(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/ProfileUpdate',
+            user__service__pb2.ProfileUpdateRequest.SerializeToString,
+            user__service__pb2.ProfileUpdateResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ForgotEmail(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/ForgotEmail',
+            user__service__pb2.ForgoteEmailRequest.SerializeToString,
+            user__service__pb2.ForgoteEmailResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ChangePassword(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/ChangePassword',
+            user__service__pb2.ChangePasswordRequest.SerializeToString,
+            user__service__pb2.ChangePasswordResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PostProfile(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/PostProfile',
+            user__service__pb2.PostProfileRequest.SerializeToString,
+            user__service__pb2.PostProfileResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PostUniqueData(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/PostUniqueData',
+            user__service__pb2.PostUniqueDataRequest.SerializeToString,
+            user__service__pb2.PostUniqueDataResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CommentUniqueData(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/CommentUniqueData',
+            user__service__pb2.CommentUniqueDataRequest.SerializeToString,
+            user__service__pb2.CommentUniqueDataResponse.FromString,
             options,
             channel_credentials,
             insecure,

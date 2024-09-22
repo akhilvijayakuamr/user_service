@@ -42,10 +42,26 @@ def authenticate_admin(email, password, context):
 
 def all_users(context):
     try:
-        users = CustomUser.objects.all() 
+        users = CustomUser.objects.filter(is_superuser=False) 
         return users
     except CustomUser.DoesNotExist:
         context.abort(StatusCode.NOT_FOUND, "Users not found")
+        
+        
+        
+# Block and unblock user
+        
+        
+def block_unblock_user(user_id, context):
+    try:
+        user = CustomUser.objects.get(id=int(user_id))
+    except CustomUser.DoesNotExist:
+        context.abort(StatusCode.NOT_FOUND, "User not found")
+    user.is_active = not user.is_active
+    user.save()
+    action = "blocked" if not user.is_active else "unblocked"
+    return f"User successfully {action}"
+    
         
         
         

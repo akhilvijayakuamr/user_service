@@ -7,10 +7,21 @@ service UserService {
     rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
     rpc VerifyOtp(VerifyOtpRequest) returns (VerifyOtpResponse);
     rpc LoginUser(LoginUserRequest) returns (LoginResponse);
+    rpc GoogleUser(GoogleUserRequest) returns (GoogleUserResponse);
     rpc LoginAdmin(LoginAdminRequest) returns (LoginAdminResponse);
     rpc ResendOtp(ResendOtpRequest) returns (ResendOtpResponse);
     rpc UserList(UserListRequest) returns (UserListResponse);
+    rpc Autherization(AuthRequest) returns (AuthResponse);
+    rpc BlockUnblockUser(BlockUnBlockRequest) returns (BlockUnBlockResponse);
+    rpc ProfileData(ProfileDataRequest) returns (ProfileDataResponse);
+    rpc ProfileUpdate(ProfileUpdateRequest) returns (ProfileUpdateResponse);
+    rpc ForgotEmail(ForgoteEmailRequest) returns (ForgoteEmailResponse);
+    rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);
+    rpc PostProfile(PostProfileRequest) returns (PostProfileResponse);
+    rpc PostUniqueData(PostUniqueDataRequest) returns (PostUniqueDataResponse);
+    rpc CommentUniqueData(CommentUniqueDataRequest) returns (CommentUniqueDataResponse);
 }
+
 
 
 message CreateUserRequest {
@@ -59,6 +70,7 @@ message LoginResponse{
     string email = 2;
     string jwt = 3;
     string message = 4;
+    string profile = 5;
 }
 
 
@@ -75,7 +87,7 @@ message LoginAdminResponse{
 
 
 message User {
-    int32 id = 1;
+    string id = 1;
     string username = 2;
     string full_name = 3;
     string email = 4;
@@ -89,4 +101,133 @@ message UserListRequest{}
 message UserListResponse{
     repeated User users = 1;
 }
+
+
+message AuthRequest {
+    string token = 1;
+}
+
+
+message AuthResponse {
+    string id =1;
+    bool admin = 2;
+    bool user = 3;
+    string message = 4;
+}
+
+
+message BlockUnBlockRequest{
+    string id = 1;
+}
+
+
+message BlockUnBlockResponse{
+    string message = 1;
+}
+
+
+
+message ProfileDataRequest{
+    int32 id = 1;
+}
+
+message ProfileDataResponse{
+    int32 id = 1;
+    string username = 2;
+    string full_name = 3;
+    string location = 4;
+    string bio = 5;
+    string dob = 6;
+    string profileimage = 7;
+    string coverimage = 8;
+}
+
+
+
+message ProfileUpdateRequest{
+    int32 id = 1;
+    string username = 2;
+    string full_name = 3;
+    string location = 4;
+    string bio = 5;
+    string dob = 6;
+    bytes profileimage = 8;
+    bytes coverimage = 9;
+}
+
+
+message ProfileUpdateResponse{
+    string message = 1;
+    string error = 2;
+}
+
+
+
+message GoogleUserRequest{
+    string email = 1;
+    string full_name = 2;
+}
+
+
+message GoogleUserResponse{
+    string id = 1;
+    string email = 2;
+    string jwt = 3;
+    string message = 4;
+}
+
+
+
+message ForgoteEmailRequest{
+    string email = 1;
+}
+
+message ForgoteEmailResponse{
+    string message = 1;
+}
+
+
+message ChangePasswordRequest{
+    string email = 1;
+    string password = 2;
+}
+
+
+message ChangePasswordResponse{
+    string message = 1;
+}
+
+
+message PostProfileRequest{
+    int32 user_id = 1;
+}
+
+message PostProfileResponse{
+    string profile_image = 1;
+}
+
+
+message PostUniqueDataRequest{
+    int32 user_id = 1;
+}
+
+
+message PostUniqueDataResponse{
+    string full_name = 1;
+    string username = 2;
+    string profile_image = 3;
+    string bio = 4;
+}
+
+
+message CommentUniqueDataRequest{
+    int32 user_id = 1;
+}
+
+
+message CommentUniqueDataResponse{
+    string full_name = 1;
+    string user_profile = 2;
+}
+
 
