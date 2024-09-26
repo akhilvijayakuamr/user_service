@@ -12,7 +12,6 @@ from django.conf import settings
 
 # Authentication Admin
 
-
 def authenticate_admin(email, password, context):
     try:
         user = CustomUser.objects.get(email=email)
@@ -37,8 +36,8 @@ def authenticate_admin(email, password, context):
         
         
         
+        
 # Get all users
-
 
 def all_users(context):
     try:
@@ -49,8 +48,9 @@ def all_users(context):
         
         
         
-# Block and unblock user
         
+        
+# Block and unblock user
         
 def block_unblock_user(user_id, context):
     try:

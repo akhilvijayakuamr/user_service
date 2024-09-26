@@ -5,6 +5,7 @@ from django.contrib.auth.models import BaseUserManager
 class CustomUserManager(BaseUserManager):
     
     
+    
     # Create User manager.
     
     def create_user(self, email, password=None, **extra_fields):
@@ -23,8 +24,9 @@ class CustomUserManager(BaseUserManager):
         return user
     
     
-    # Create Superuser manager.
     
+    
+    # Create Superuser manager.
     
     def create_superuser(self, email, password=None, **extra_fields):
         

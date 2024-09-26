@@ -7,6 +7,9 @@ from grpc import StatusCode
 from .models import CustomUser
 from django.conf import settings
 
+
+# Sent Email 
+
 def send_otp_mail(context, email):
     otp = random.randint(100000, 999999)
     sender_email = settings.EMAIL_HOST_USER

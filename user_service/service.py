@@ -11,6 +11,7 @@ from django.core.files.base import ContentFile
 class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
     
     
+    
     # User Register
     
     def CreateUser(self, request, context):
@@ -32,6 +33,7 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         )
         
         
+        
     # Verification OTP
         
     def VerifyOtp(self, request, context):
@@ -49,8 +51,9 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         )
         
         
+        
+        
     # Resend OTP
-    
     
     def ResendOtp(self, request, context):
         
@@ -63,6 +66,8 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         )
         
         
+        
+        
     # User Login
         
     def LoginUser(self, request, context):
@@ -72,8 +77,6 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
 
         user, token, profile_img  = authenticate_user(email, password, provider, context)
         
-      
-
         return user_service_pb2.LoginResponse(
             id=str(user.id),
             email=user.email,
@@ -83,9 +86,11 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         )
         
         
+        
+        
+        
     # Admin Login
-    
-    
+
     def LoginAdmin(self, request, context):
         email = request.email
         password = request.password
@@ -95,6 +100,11 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
             jwt = str(token),
             message = "Login Success"
         )
+    
+
+        
+        
+        
         
         
     # Get Allusers
@@ -109,6 +119,9 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         return user_service_pb2.UserListResponse(users=user_list)
     
     
+    
+    
+    
     # Check Auth
     
     def Autherization(self, request, context):
@@ -121,12 +134,17 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         )
         
         
+        
+        
+        
     # Block and Unblock user
         
     def BlockUnblockUser(self, request, context):
         user_id = request.id
         response = block_unblock_user(user_id, context)
         return user_service_pb2.BlockUnBlockResponse(message=response)
+    
+    
     
     
     
@@ -148,6 +166,8 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         
 
 
+
+
     # Update profile 
         
     def ProfileUpdate(self, request, context):
@@ -159,9 +179,9 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         
         
         
+        
+        
     # Google auth
-    
-    
     
     def GoogleUser(self, request, context):
         email = request.email
@@ -177,9 +197,11 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         )
         
         
+        
+        
+        
     # Forgote 
     
-
     def ForgotEmail(self, request, context):
         
         email = request.email
@@ -189,8 +211,10 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         )
         
         
+        
+        
+        
     # Change password
-    
     
     def ChangePassword(self, request, context):
         email = request.email
@@ -201,20 +225,23 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         )
         
         
+        
+        
+        
     # get user profile photo
         
     def PostProfile(self, request, context):
         user_id = request.user_id
-        print("user_Di",user_id)
         response = profile_image(user_id, context)
         return user_service_pb2.PostProfileResponse(
-            profile_image = response['user_profile']
+            profile_image = response.get('user_profile', '')
         )
         
         
         
+        
+        
     # get unique post data
-    
     
     def PostUniqueData(self, request, context):
         user_id = request.user_id
@@ -222,21 +249,22 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         return user_service_pb2.PostUniqueDataResponse(
             full_name = response['full_name'],
             username = response['username'],
-            profile_image = response['user_profile'],
-            bio = response['bio']
+            profile_image = response.get('user_profile', ''),
+            bio = response.get('bio', '')
         )
         
         
         
+        
+        
+        
     # Take comment post data
-    
-    
     
     def CommentUniqueData(self, request, context):
         user_id = request.user_id
         response = comment_profile(user_id, context)
         return user_service_pb2.CommentUniqueDataResponse(
             full_name = response['full_name'],
-            user_profile = response['user_profile']
+            user_profile = response.get('user_profile', '')
             
         )

@@ -34,6 +34,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     
 
 
+
+# User Profile Model
+
 class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     bio = models.TextField(blank=True, null=any)

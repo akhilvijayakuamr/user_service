@@ -28,7 +28,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
     
-    
+   
+
+ 
     
 class VerifyUserSerializer(serializers.Serializer):
     email = serializers.EmailField()

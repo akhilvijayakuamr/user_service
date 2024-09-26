@@ -22,20 +22,17 @@ def user_register(data, context):
     email = data.get('email')
     username = data.get('username')
 
-    
     if CustomUser.objects.filter(email=email).exists():
         context.abort(StatusCode.ALREADY_EXISTS, "Email Already Exists")
 
     if CustomUser.objects.filter(username=username).exists():
         context.abort(StatusCode.ALREADY_EXISTS, "Username Already Exists")
 
-
     serializer = CustomUserSerializer(data=data)
     
     try:
         serializer.is_valid(raise_exception=True)
         serializer.save()
-
 
         send_otp_mail(context, serializer.data['email'])
         print(serializer.data)
@@ -49,17 +46,18 @@ def user_register(data, context):
         context.abort(StatusCode.INTERNAL, f"An unexpected error occurred: {str(e)}")
         
         
+        
+        
  
  # OTP verification       
-        
         
 def otp_verification(data, context):
     
     serializer = VerifyUserSerializer(data=data)
+    
     if not serializer.is_valid():
         errors = serializer.errors
         context.abort(StatusCode.INVALID_ARGUMENT, f"Validation Error: {errors}")
-    
     
     validated_data = serializer.validated_data
     email = validated_data.get('email')
@@ -84,22 +82,31 @@ def otp_verification(data, context):
     }
     
     
+    
+    
+    
 # Resend otp
 
 def recreate_otp(email, context):
     try:
         user = CustomUser.objects.get(email=email)
+        
         if not user:
             context.abort(StatusCode.NOT_FOUND, "Please Register again")
+            
         send_otp_mail(context, email)
         
         return {
             'message': 'Check Email For Verification',
             'error': '',
         }
+        
     except CustomUser.DoesNotExist:
         context.abort(StatusCode.NOT_FOUND, "Please Register again")
       
+    
+    
+    
     
 # Authentication User
     
@@ -109,24 +116,21 @@ def authenticate_user(email, password, provider, context):
     except CustomUser.DoesNotExist:
         context.abort(StatusCode.NOT_FOUND, "User not found")
 
-    
     if not user.is_verified:
         context.abort(StatusCode.PERMISSION_DENIED, "User not verified")
 
-    
     if user.is_superuser:
         context.abort(StatusCode.PERMISSION_DENIED, "Admin can't access")
 
-    
     if provider != 'google' and not user.check_password(password):
         context.abort(StatusCode.INVALID_ARGUMENT, "Incorrect password")
-
 
     payload = {
         'id': user.id,
         'exp': timezone.now() + timezone.timedelta(days=2),
         'iat': timezone.now(),
     }
+    
     try:
         profile = UserProfile.objects.get(user=user)
         profile_img = profile.profile_image.url if profile.profile_image else ''
@@ -138,6 +142,10 @@ def authenticate_user(email, password, provider, context):
     return user, token, profile_img
 
 
+
+
+
+
 # check auth
 
 def auth_check(token, context):
@@ -145,6 +153,7 @@ def auth_check(token, context):
         payload = jwt.decode(token.token, settings.SECRET_KEY, algorithms=["HS256"])
         user_id = payload['id']
         user = CustomUser.objects.filter(id=user_id).first()
+        
         if not user:
             context.abort(StatusCode.PERMISSION_DENIED, "User not found")
             
@@ -155,15 +164,19 @@ def auth_check(token, context):
                 'user': False,
                 'message':'Autherization Success'
             }
+             
         else:
             return {
                 'id':str(id),
                 'admin': False,
                 'user': True,
                 'message':'Autherization Success'
-            }       
+            } 
+                  
     except CustomUser.DoesNotExist:
         context.abort(StatusCode.NOT_FOUND, "Autherization Failed")
+        
+        
         
         
         
@@ -184,7 +197,6 @@ def profile_data(id, context):
             user_profile_image = user_profile.profile_image.url if user_profile else ''
             user_cover_image = user_profile.cover_photo.url if user_profile else ''
            
-            
         except UserProfile.DoesNotExist:
             
             user_location = ''
@@ -205,16 +217,15 @@ def profile_data(id, context):
             'coverimage':user_cover_image
         }
        
-        
-        
     except CustomUser.DoesNotExist:
         context.abort(StatusCode.PERMISSION_DENIED, "User not found")
         
     
     
     
+    
+    
 # Update profile
-
 
 def update_profile_data(request, context):
     user_id = request.id
@@ -226,18 +237,13 @@ def update_profile_data(request, context):
     profile_image = request.profileimage
     cover_image = request.coverimage
     
-    
-    
     try:
         user = CustomUser.objects.get(id=user_id)
         user.username = username
         user.full_name = full_name
         user.save()
         
-        
         user_profile, created = UserProfile.objects.get_or_create(user=user)
-        
-       
                 
         if profile_image:
             profile_image_name = f"profile_{uuid.uuid4().hex}_{int(time.time())}.jpg"
@@ -277,7 +283,6 @@ def update_profile_data(request, context):
         
 # Google auth
 
-
 def google_user(email, full_name, context):
     try:
         user = CustomUser.objects.get(email=email)
@@ -299,7 +304,6 @@ def google_user(email, full_name, context):
         context.abort(StatusCode.PERMISSION_DENIED, "Admin can't access")
 
 
-
     payload = {
         'id': user.id,
         'exp': timezone.now() + timezone.timedelta(days=2),
@@ -310,8 +314,10 @@ def google_user(email, full_name, context):
     return user, token
 
 
-# Forgot Email
 
+
+
+# Forgot Email
 
 def forgot_email(email, context):
     try:
@@ -327,9 +333,11 @@ def forgot_email(email, context):
         context.abort(StatusCode.NOT_FOUND, "User is not found plese check your email")
         
         
+        
+        
+        
 
 # Change password
-
 
 def change_password(email, password, context):
     try:
@@ -350,8 +358,9 @@ def change_password(email, password, context):
         
         
         
+        
+        
 # Get user profile image
-
 
 def profile_image(user_id, context):
     try:
@@ -362,17 +371,17 @@ def profile_image(user_id, context):
                 'user_profile':profile.profile_image.url
             } 
         except UserProfile.DoesNotExist:
-           context.abort(StatusCode.NOT_FOUND, "User profile not found")
-        
+           return {
+                'user_profile':''
+            } 
     except CustomUser.DoesNotExist:
         context.abort(StatusCode.NOT_FOUND, "User is not found")
         
         
         
         
+        
 # Get unique post profile image and bio
-
-
 
 def unique_post_data(user_id, context):
     try:
@@ -387,7 +396,12 @@ def unique_post_data(user_id, context):
             } 
             
         except UserProfile.DoesNotExist:
-           context.abort(StatusCode.NOT_FOUND, "User profile not found")  
+          return {
+                'full_name':user.full_name,
+                'username':user.username,
+                'user_profile':'',
+                'bio' : ''
+            } 
              
     except CustomUser.DoesNotExist:
         context.abort(StatusCode.NOT_FOUND, "User is not found")
@@ -396,8 +410,8 @@ def unique_post_data(user_id, context):
         
         
         
+        
 # Take comment user profile
-
 
 def comment_profile(user_id, context):
     try:
@@ -406,10 +420,13 @@ def comment_profile(user_id, context):
             profile = UserProfile.objects.get(user=user)
             return {
                 'full_name':user.full_name,
-                'user_profile':profile.profile_image.url
+                'user_profile':profile.profile_image.url if profile.profile_image else ''
             } 
         except UserProfile.DoesNotExist:
-           context.abort(StatusCode.NOT_FOUND, "User profile not found")
+          return {
+                'full_name':user.full_name,
+                'user_profile':''
+            }
         
     except CustomUser.DoesNotExist:
         context.abort(StatusCode.NOT_FOUND, "User is not found")

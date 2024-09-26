@@ -11,24 +11,37 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+    
+
 from datetime import timedelta
 import os
 from decouple import config
 
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+
 SECRET_KEY = config('SECRET_KEY')
 
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = config('DEBUG', cast=bool, default=True)
 
+
 ALLOWED_HOSTS = []
+
 
 
 # Application definition
@@ -46,6 +59,10 @@ INSTALLED_APPS = [
    
 ]
 
+
+
+# MIDDLEWARE
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -56,7 +73,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+
+# ROOT URL
+
+
 ROOT_URLCONF = 'user_service.urls'
+
+
+
+# TEMPLATES
 
 TEMPLATES = [
     {
@@ -74,7 +100,11 @@ TEMPLATES = [
     },
 ]
 
+
+
 WSGI_APPLICATION = 'user_service.wsgi.application'
+
+
 
 
 # Database
@@ -90,6 +120,7 @@ DATABASES = {
         'PORT': config('DB_PORT'),         # PostgreSQL port
     }
 }
+
 
 
 
@@ -112,6 +143,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -124,30 +157,43 @@ USE_I18N = True
 USE_TZ = True
 
 
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-MEDIA_URL = '/media/'
 
+
+
+# MEDIA FILES
+
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 
 
-    # aws settings
+# AWS Conf
+
 AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME')
 
 
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Register my custom user
+
+
+# Register Customuser Model
 
 AUTH_USER_MODEL = 'user_auth.CustomUser'
 
+
+
+# EMAIL Conf
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
@@ -156,6 +202,9 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_DEBUG = config('EMAIL_DEBUG', cast=bool)
 
 
+
+
+# Authentication Backends
 
 AUTHENTICATION_BACKENDS = [
     'rest_framework_simplejwt.authentication.JWTAuthentication',
