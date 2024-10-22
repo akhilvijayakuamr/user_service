@@ -119,6 +119,16 @@ class UserServiceStub(object):
                 request_serializer=user__service__pb2.CommentUniqueDataRequest.SerializeToString,
                 response_deserializer=user__service__pb2.CommentUniqueDataResponse.FromString,
                 _registered_method=True)
+        self.UserFollow = channel.unary_unary(
+                '/user_service.UserService/UserFollow',
+                request_serializer=user__service__pb2.UserFollowRequest.SerializeToString,
+                response_deserializer=user__service__pb2.UserFollowResponse.FromString,
+                _registered_method=True)
+        self.UserSearch = channel.unary_unary(
+                '/user_service.UserService/UserSearch',
+                request_serializer=user__service__pb2.UserSearchRequest.SerializeToString,
+                response_deserializer=user__service__pb2.UserSearchResponse.FromString,
+                _registered_method=True)
 
 
 class UserServiceServicer(object):
@@ -220,6 +230,18 @@ class UserServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def UserFollow(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UserSearch(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_UserServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -302,6 +324,16 @@ def add_UserServiceServicer_to_server(servicer, server):
                     servicer.CommentUniqueData,
                     request_deserializer=user__service__pb2.CommentUniqueDataRequest.FromString,
                     response_serializer=user__service__pb2.CommentUniqueDataResponse.SerializeToString,
+            ),
+            'UserFollow': grpc.unary_unary_rpc_method_handler(
+                    servicer.UserFollow,
+                    request_deserializer=user__service__pb2.UserFollowRequest.FromString,
+                    response_serializer=user__service__pb2.UserFollowResponse.SerializeToString,
+            ),
+            'UserSearch': grpc.unary_unary_rpc_method_handler(
+                    servicer.UserSearch,
+                    request_deserializer=user__service__pb2.UserSearchRequest.FromString,
+                    response_serializer=user__service__pb2.UserSearchResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -736,6 +768,60 @@ class UserService(object):
             '/user_service.UserService/CommentUniqueData',
             user__service__pb2.CommentUniqueDataRequest.SerializeToString,
             user__service__pb2.CommentUniqueDataResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UserFollow(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/UserFollow',
+            user__service__pb2.UserFollowRequest.SerializeToString,
+            user__service__pb2.UserFollowResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UserSearch(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/UserSearch',
+            user__service__pb2.UserSearchRequest.SerializeToString,
+            user__service__pb2.UserSearchResponse.FromString,
             options,
             channel_credentials,
             insecure,

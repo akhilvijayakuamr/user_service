@@ -152,7 +152,8 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
     
     def ProfileData(self, request, context):
         user_id = request.id
-        response = profile_data(user_id, context)
+        profile_id = request.profile_id
+        response = profile_data(user_id, profile_id, context)
         return user_service_pb2.ProfileDataResponse(
             id = response['id'],
             username = response['username'],
@@ -162,6 +163,9 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
             dob = response.get('dob', ''),
             profileimage = response.get('profileimage', ''),
             coverimage = response.get('coverimage', ''),
+            follow = response.get('follow', False),
+            followers_count = response.get('followers_count', 0),
+            following_count = response.get('following_count', 0)
         )
         
 
@@ -268,3 +272,25 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
             user_profile = response.get('user_profile', '')
             
         )
+        
+        
+    # Follow user
+    
+    
+    def UserFollow(self, request, context):
+        user_id = request.user_id
+        folllow_user_id = request.follow_user_id
+        response = user_follow(user_id, folllow_user_id, context)
+        return user_service_pb2.UserFollowResponse(
+            message=response['message'],
+        )
+    
+
+
+    # Search user
+
+    def UserSearch(self, request, context):
+        user_id = request.user_id
+        query = request.query
+        response = search_user(user_id, query, context)
+        return user_service_pb2.UserSearchResponse(searchdata=response)

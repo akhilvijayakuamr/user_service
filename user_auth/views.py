@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import CustomUser, UserProfile
+from .models import CustomUser, UserProfile, Following
 from proto import user_service_pb2
 from proto import user_service_pb2_grpc
 from .serializers import CustomUserSerializer, VerifyUserSerializer
@@ -182,9 +182,10 @@ def auth_check(token, context):
         
 # Take profile data
 
-def profile_data(id, context):
+def profile_data(id, profile_id, context):
     try:
-        user = CustomUser.objects.get(id=id)
+        user = CustomUser.objects.get(id=profile_id)
+        profile_user = CustomUser.objects.get(id=id)
         user_id = user.id
         user_username = user.username
         user_fullname = user.full_name
@@ -196,6 +197,10 @@ def profile_data(id, context):
             user_dob = user_profile.date_of_birth if user_profile else ''
             user_profile_image = user_profile.profile_image.url if user_profile else ''
             user_cover_image = user_profile.cover_photo.url if user_profile else ''
+            follow = Following.objects.filter(follower=profile_user, followed=user, is_active=True, is_delete=False).exists()
+            followers_count = Following.objects.filter(followed=user, is_active=True, is_delete=False)
+            following_count = Following.objects.filter(follower=user, is_active=True, is_delete=False)
+            
            
         except UserProfile.DoesNotExist:
             
@@ -204,9 +209,11 @@ def profile_data(id, context):
             user_dob = ''
             user_profile_image = ''
             user_cover_image = ''
-            
+            follow = Following.objects.filter(follower=profile_user, followed=user, is_active=True, is_delete=False).exists()
+            followers_count = Following.objects.filter(followed=user, is_active=True, is_delete=False)
+            following_count = Following.objects.filter(follower=user, is_active=True, is_delete=False)
+      
         return {
-            
             'id':user_id,
             'username':user_username,
             'full_name':user_fullname,
@@ -214,7 +221,10 @@ def profile_data(id, context):
             'bio':user_bio,
             'dob':str(user_dob),
             'profileimage':user_profile_image,
-            'coverimage':user_cover_image
+            'coverimage':user_cover_image,
+            'follow':follow,
+            'followers_count':followers_count.count(),
+            'following_count':following_count.count()
         }
        
     except CustomUser.DoesNotExist:
@@ -303,7 +313,6 @@ def google_user(email, full_name, context):
     if user.is_superuser:
         context.abort(StatusCode.PERMISSION_DENIED, "Admin can't access")
 
-
     payload = {
         'id': user.id,
         'exp': timezone.now() + timezone.timedelta(days=2),
@@ -380,7 +389,7 @@ def profile_image(user_id, context):
         
         
         
-        
+       
 # Get unique post profile image and bio
 
 def unique_post_data(user_id, context):
@@ -430,6 +439,65 @@ def comment_profile(user_id, context):
         
     except CustomUser.DoesNotExist:
         context.abort(StatusCode.NOT_FOUND, "User is not found")
+        
+        
+        
+# User Follow
+
+
+def user_follow(user_id, folllow_user_id, context):
+    try:
+        user = CustomUser.objects.get(id=user_id)
+        
+        try:
+            follow_user = CustomUser.objects.get(id=folllow_user_id)
+            following_relationship, created = Following.objects.get_or_create(
+                follower = user, 
+                followed = follow_user
+            )
+            
+            following_relationship.is_active = not following_relationship.is_active
+            following_relationship.save()
+            message = "You are now following this user" if following_relationship.is_active else "You have unfollowed this user."
+            return {
+             'message': message
+            }
+            
+            
+        except CustomUser.DoesNotExist:
+            context.abort(StatusCode.NOT_FOUND, "Following user is not found")
+            
+    except CustomUser.DoesNotExist:
+        context.abort(StatusCode.NOT_FOUND, "User is not found")
+
+
+
+
+
+# search User
+
+
+def search_user(user_id, query, context):
+    try:
+        all_users = []
+        users = CustomUser.objects.filter(full_name__icontains = query).exclude(id=user_id)
+        for user in users:
+            try:
+                profile = UserProfile.objects.get(user=user)
+                profile_image_url = profile.profile_image.url if profile.profile_image else ''
+            except UserProfile.DoesNotExist:
+                profile_image_url = ''
+
+            all_users.append(user_service_pb2.Search(
+                id = user.id,
+                full_name = user.full_name,
+                user_name = user.username,
+                user_profile = profile_image_url
+            ))
+        return all_users
+    except CustomUser.DoesNotExist:
+        context.abort(StatusCode.NOT_FOUND, "Users not found")
+
         
             
         

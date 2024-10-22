@@ -20,6 +20,8 @@ service UserService {
     rpc PostProfile(PostProfileRequest) returns (PostProfileResponse);
     rpc PostUniqueData(PostUniqueDataRequest) returns (PostUniqueDataResponse);
     rpc CommentUniqueData(CommentUniqueDataRequest) returns (CommentUniqueDataResponse);
+    rpc UserFollow(UserFollowRequest) returns (UserFollowResponse);
+    rpc UserSearch(UserSearchRequest) returns (UserSearchResponse);
 }
 
 
@@ -129,6 +131,7 @@ message BlockUnBlockResponse{
 
 message ProfileDataRequest{
     int32 id = 1;
+    int32 profile_id = 2;
 }
 
 message ProfileDataResponse{
@@ -140,6 +143,9 @@ message ProfileDataResponse{
     string dob = 6;
     string profileimage = 7;
     string coverimage = 8;
+    bool follow = 9;
+    int32 followers_count = 10;
+    int32 following_count = 11;
 }
 
 
@@ -229,5 +235,38 @@ message CommentUniqueDataResponse{
     string full_name = 1;
     string user_profile = 2;
 }
+
+
+message UserFollowRequest{
+    int32 user_id = 1;
+    int32 follow_user_id = 2;
+}
+
+
+
+message UserFollowResponse{
+    string message = 1;
+}
+
+
+message UserSearchRequest{
+    int32 user_id = 1;
+    string query = 2;
+}
+
+
+message Search{
+    int32 id = 1;
+    string full_name = 2;
+    string user_name = 3;
+    string user_profile = 4;
+}
+
+
+
+message UserSearchResponse{
+   repeated Search searchdata = 1;
+}
+
 
 

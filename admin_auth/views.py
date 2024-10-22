@@ -13,6 +13,7 @@ from django.conf import settings
 # Authentication Admin
 
 def authenticate_admin(email, password, context):
+    print(email, password)
     try:
         user = CustomUser.objects.get(email=email)
     except CustomUser.DoesNotExist:

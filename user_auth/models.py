@@ -53,3 +53,22 @@ class UserProfile(models.Model):
     
     
     
+    
+# User Following Model
+
+class Following(models.Model):
+    follower = models.ForeignKey(CustomUser, related_name='following', on_delete=models.CASCADE, verbose_name='follower')
+    followed = models.ForeignKey(CustomUser, related_name='followers', on_delete=models.CASCADE, verbose_name='Followed')
+    is_active = models.BooleanField(default=False, verbose_name='Active')
+    created_at = models.DateTimeField(default=timezone.now)
+    is_delete = models.BooleanField(default=False)
+    
+    
+    class Meta:
+        unique_together = ('follower', 'followed')
+        verbose_name = 'Following'
+        verbose_name_plural = 'Followings'
+        
+        
+        
+
