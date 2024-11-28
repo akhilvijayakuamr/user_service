@@ -13,7 +13,6 @@ from django.conf import settings
 # Authentication Admin
 
 def authenticate_admin(email, password, context):
-    print(email, password)
     try:
         user = CustomUser.objects.get(email=email)
     except CustomUser.DoesNotExist:
@@ -25,16 +24,24 @@ def authenticate_admin(email, password, context):
     if not user.check_password(password):
         context.abort(StatusCode.INVALID_ARGUMENT, "Incorrect password")
     
-    payload = {
+    access_payload = {
         'id': user.id,
-        'exp': timezone.now() + timezone.timedelta(days=2),
+        'exp': timezone.now() + timezone.timedelta(minutes=1), 
+        'iat': timezone.now(),
+    }
+
+    refresh_payload = {
+        'id': user.id,
+        'exp': timezone.now() + timezone.timedelta(days=15),  
         'iat': timezone.now(),
     }
     
-    token = jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
+    access_token = jwt.encode(access_payload, settings.SECRET_KEY, algorithm="HS256")
+    refresh_token = jwt.encode(refresh_payload, settings.SECRET_KEY, algorithm="HS256")
+    
 
-    return token
-        
+    return access_token, refresh_token
+    
         
         
         
@@ -50,7 +57,6 @@ def all_users(context):
         
         
         
-        
 # Block and unblock user
         
 def block_unblock_user(user_id, context):
@@ -62,6 +68,21 @@ def block_unblock_user(user_id, context):
     user.save()
     action = "blocked" if not user.is_active else "unblocked"
     return f"User successfully {action}"
+
+
+
+
+# Get all dashboard user details
+
+def user_dashboard(context):
+    try:
+        all_users = CustomUser.objects.all().count()
+        block_users = CustomUser.objects.filter(is_active=False).count()
+        return all_users, block_users
+    except CustomUser.DoesNotExist:
+        context.abort(StatusCode.NOT_FOUND, "User not found")
+        
+        
     
         
         

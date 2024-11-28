@@ -29,15 +29,14 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return instance
     
    
+# Verification serializer
 
- 
-    
 class VerifyUserSerializer(serializers.Serializer):
     email = serializers.EmailField()
     otp = serializers.CharField()
     
     
-
+# Login serializer
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()

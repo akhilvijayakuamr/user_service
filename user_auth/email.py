@@ -15,10 +15,9 @@ def send_otp_mail(context, email):
     sender_email = settings.EMAIL_HOST_USER
     receiver_email = email
     password_email = settings.EMAIL_HOST_PASSWORD
-    print("top: ", otp)
 
-    subject = "Your OTP for Registration"
-    message = f"Your OTP is: {otp}"
+    subject = "AssureTech: Your One-Time Password (OTP) for Registration"
+    message = f"""Dear AssureTech User, You have initiated a registration request with AssureTech. Your verification code is: {otp} The code will expire in 10 minutes. For your account's security, please do not share this code with anyone else. Thank you for choosing AssureTech!"""
     
     msg = MIMEMultipart()
     msg['From'] = sender_email

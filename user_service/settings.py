@@ -40,8 +40,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', cast=bool, default=True)
 
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [config('ALLOWED_HOSTS', default='localhost')]
 
 
 # Application definition
@@ -113,11 +112,11 @@ WSGI_APPLICATION = 'user_service.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),  # database name
-        'USER': config('DB_USER'),       # PostgreSQL user
-        'PASSWORD': config('DB_PASSWORD'),  # PostgreSQL password
-        'HOST': config('DB_HOST'),    # Database host (usually localhost)
-        'PORT': config('DB_PORT'),         # PostgreSQL port
+        'NAME': config('POSTGRES_DB'),  # database name
+        'USER': config('POSTGRES_USER'),       # PostgreSQL user
+        'PASSWORD': config('POSTGRES_PASSWORD'),  # PostgreSQL password
+        'HOST': config('POSTGRES_HOST'),    # Database host (usually localhost)
+        'PORT': config('POSTGRES_PORT'),         # PostgreSQL port
     }
 }
 
@@ -163,6 +162,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
 
 
 

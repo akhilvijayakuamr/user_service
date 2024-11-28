@@ -1,7 +1,7 @@
 from proto import user_service_pb2
 from proto import user_service_pb2_grpc
 from user_auth.views import *
-from admin_auth.views import authenticate_admin, all_users, block_unblock_user
+from admin_auth.views import *
 from django.core.files.base import ContentFile  
 
 
@@ -9,7 +9,6 @@ from django.core.files.base import ContentFile
 
 
 class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
-    
     
     
     # User Register
@@ -23,8 +22,6 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
             'password': request.password
         }
         
-
-
         response_data = user_register(data, context)
         
         return user_service_pb2.CreateUserResponse(
@@ -75,17 +72,16 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         password = request.password
         provider = request.provider
 
-        user, token, profile_img  = authenticate_user(email, password, provider, context)
+        user, access_token, refresh_token, profile_img  = authenticate_user(email, password, provider, context)
         
         return user_service_pb2.LoginResponse(
             id=str(user.id),
             email=user.email,
-            jwt=str(token),
+            access_token = str(access_token),
+            refresh_token = str(refresh_token),
             message= "Login Success",
             profile = profile_img
         )
-        
-        
         
         
         
@@ -95,17 +91,15 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         email = request.email
         password = request.password
         
-        token = authenticate_admin(email, password, context)
+        access_token, refresh_token = authenticate_admin(email, password, context)
         return user_service_pb2.LoginAdminResponse(
-            jwt = str(token),
-            message = "Login Success"
+            access_token = str(access_token),
+            refresh_token = str(refresh_token),
+            message = "Login success"
         )
     
 
-        
-        
-        
-        
+
         
     # Get Allusers
         
@@ -117,7 +111,6 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
                                            email=user.email,
                                            is_active=user.is_active) for user in users]
         return user_service_pb2.UserListResponse(users=user_list)
-    
     
     
     
@@ -136,14 +129,12 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         
         
         
-        
     # Block and Unblock user
         
     def BlockUnblockUser(self, request, context):
         user_id = request.id
         response = block_unblock_user(user_id, context)
         return user_service_pb2.BlockUnBlockResponse(message=response)
-    
     
     
     
@@ -171,7 +162,6 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
 
 
 
-
     # Update profile 
         
     def ProfileUpdate(self, request, context):
@@ -184,25 +174,24 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         
         
         
-        
     # Google auth
     
     def GoogleUser(self, request, context):
         email = request.email
         password = request.full_name
 
-        user, token = google_user(email, password, context)
+        user, access_token, refresh_token= google_user(email, password, context)
 
         return user_service_pb2.GoogleUserResponse(
             id=str(user.id),
             email=user.email,
-            jwt=str(token),
+            access_token=str(access_token),
+            refresh_token=str(refresh_token),
             message="Login Success"
         )
         
         
-        
-        
+             
         
     # Forgote 
     
@@ -215,8 +204,7 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         )
         
         
-        
-        
+             
         
     # Change password
     
@@ -230,8 +218,7 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         
         
         
-        
-        
+               
     # get user profile photo
         
     def PostProfile(self, request, context):
@@ -242,8 +229,7 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         )
         
         
-        
-        
+               
         
     # get unique post data
     
@@ -259,8 +245,7 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         
         
         
-        
-        
+               
         
     # Take comment post data
     
@@ -273,9 +258,10 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
             
         )
         
+      
+      
         
     # Follow user
-    
     
     def UserFollow(self, request, context):
         user_id = request.user_id
@@ -287,6 +273,7 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
     
 
 
+
     # Search user
 
     def UserSearch(self, request, context):
@@ -294,3 +281,39 @@ class UserServiceServicer(user_service_pb2_grpc.UserServiceServicer):
         query = request.query
         response = search_user(user_id, query, context)
         return user_service_pb2.UserSearchResponse(searchdata=response)
+    
+    
+    
+    
+    # Get all followers and followings
+    
+    def GetAllFriends(self, request, context):
+        user_id = request.user_id
+        response = get_friends(user_id, context)
+        return user_service_pb2.GetAllFriendsResponse(follower=response['follower'],
+                                                      followed=response['followed'])
+        
+        
+        
+        
+    # Create new access token 
+    
+    def CreateNewToken(self, request, context):
+        token = request.Token
+        response = refresh_check(token, context)
+        return user_service_pb2.CreateNewTokenResponse(
+            access_token=response['access_token'],
+            refresh_token=response['refresh_token']
+        )
+        
+        
+        
+        
+    # Get all dashboard user details
+    
+    def DashboardUserDetails(self, request, context):
+        all_users, block_users = user_dashboard(context)
+        return user_service_pb2.DashboardUserDetailsResponse(
+            all_users = all_users,
+            block_users = block_users
+        )

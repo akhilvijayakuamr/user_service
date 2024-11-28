@@ -22,6 +22,9 @@ service UserService {
     rpc CommentUniqueData(CommentUniqueDataRequest) returns (CommentUniqueDataResponse);
     rpc UserFollow(UserFollowRequest) returns (UserFollowResponse);
     rpc UserSearch(UserSearchRequest) returns (UserSearchResponse);
+    rpc GetAllFriends(GetAllFriendsRequest) returns (GetAllFriendsResponse);
+    rpc CreateNewToken(CreateNewTokenRequest) returns (CreateNewTokenResponse);
+    rpc DashboardUserDetails(DashboardUserDetailsRequest) returns (DashboardUserDetailsResponse);
 }
 
 
@@ -70,10 +73,12 @@ message LoginUserRequest{
 message LoginResponse{
     string id = 1;
     string email = 2;
-    string jwt = 3;
-    string message = 4;
-    string profile = 5;
+    string access_token = 3;
+    string refresh_token = 4;
+    string message = 5;
+    string profile = 6;
 }
+
 
 
 message LoginAdminRequest{
@@ -83,8 +88,9 @@ message LoginAdminRequest{
 
 
 message LoginAdminResponse{
-    string jwt = 1;
-    string message = 2;
+    string access_token = 1;
+    string refresh_token = 2;
+    string message = 3;
 }
 
 
@@ -178,8 +184,9 @@ message GoogleUserRequest{
 message GoogleUserResponse{
     string id = 1;
     string email = 2;
-    string jwt = 3;
-    string message = 4;
+    string access_token = 3;
+    string refresh_token = 4;
+    string message = 5;
 }
 
 
@@ -267,6 +274,49 @@ message Search{
 message UserSearchResponse{
    repeated Search searchdata = 1;
 }
+
+
+
+message GetAllFriendsRequest{
+    int32 user_id = 1;
+}
+
+message Friend{
+    int32 id = 1;
+    string full_name = 2;
+    string user_name = 3;
+    string user_profile = 4;
+}
+
+
+message GetAllFriendsResponse{
+    repeated Friend follower = 1;
+    repeated Friend followed = 2;
+
+}
+
+
+message CreateNewTokenRequest{
+    string Token = 1;
+}
+
+
+message CreateNewTokenResponse{
+    string access_token = 1;
+    string refresh_token = 2;
+}
+
+
+message DashboardUserDetailsRequest{}
+
+
+message DashboardUserDetailsResponse{
+    int32 all_users = 1;
+    int32 block_users = 2;
+}
+
+
+
 
 
 

@@ -15,7 +15,7 @@ from .service import UserServiceServicer
 
 server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 user_service_pb2_grpc.add_UserServiceServicer_to_server(UserServiceServicer(), server)
-print("Starting grpc server on port 50051....")
+
 server.add_insecure_port('[::]:50051')
 server.start()
 

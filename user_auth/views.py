@@ -35,7 +35,6 @@ def user_register(data, context):
         serializer.save()
 
         send_otp_mail(context, serializer.data['email'])
-        print(serializer.data)
 
         return {
             'message': 'Registration Successful, Check Email For Verification',
@@ -48,7 +47,6 @@ def user_register(data, context):
         
         
         
- 
  # OTP verification       
         
 def otp_verification(data, context):
@@ -84,7 +82,6 @@ def otp_verification(data, context):
     
     
     
-    
 # Resend otp
 
 def recreate_otp(email, context):
@@ -106,8 +103,7 @@ def recreate_otp(email, context):
       
     
     
-    
-    
+       
 # Authentication User
     
 def authenticate_user(email, password, provider, context):
@@ -125,9 +121,15 @@ def authenticate_user(email, password, provider, context):
     if provider != 'google' and not user.check_password(password):
         context.abort(StatusCode.INVALID_ARGUMENT, "Incorrect password")
 
-    payload = {
+    access_payload = {
         'id': user.id,
-        'exp': timezone.now() + timezone.timedelta(days=2),
+        'exp': timezone.now() + timezone.timedelta(minutes=1), 
+        'iat': timezone.now(),
+    }
+
+    refresh_payload = {
+        'id': user.id,
+        'exp': timezone.now() + timezone.timedelta(days=15),  
         'iat': timezone.now(),
     }
     
@@ -137,11 +139,10 @@ def authenticate_user(email, password, provider, context):
     except UserProfile.DoesNotExist:
         profile_img = ''
     
-    token = jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
+    access_token = jwt.encode(access_payload, settings.SECRET_KEY, algorithm="HS256")
+    refresh_token = jwt.encode(refresh_payload, settings.SECRET_KEY, algorithm="HS256")
 
-    return user, token, profile_img
-
-
+    return user, access_token, refresh_token, profile_img
 
 
 
@@ -152,17 +153,21 @@ def auth_check(token, context):
     try:
         payload = jwt.decode(token.token, settings.SECRET_KEY, algorithms=["HS256"])
         user_id = payload['id']
-        user = CustomUser.objects.filter(id=user_id).first()
+        
+        try:
+            user = CustomUser.objects.filter(id=user_id).first()
+        except CustomUser.DoesNotExist:
+            context.abort(StatusCode.NOT_FOUND, "Autherization Failed")
         
         if not user:
             context.abort(StatusCode.PERMISSION_DENIED, "User not found")
             
         if user.is_superuser:
-             return {
+            return {
                 'id':str(id),
                 'admin': True,
                 'user': False,
-                'message':'Autherization Success'
+                'message':'Autherization Success',
             }
              
         else:
@@ -170,16 +175,16 @@ def auth_check(token, context):
                 'id':str(id),
                 'admin': False,
                 'user': True,
-                'message':'Autherization Success'
+                'message':'Autherization Success',
             } 
+            
+            
+    except jwt.ExpiredSignatureError:
+       context.abort(StatusCode.UNAUTHENTICATED, "Token has expired")
                   
-    except CustomUser.DoesNotExist:
-        context.abort(StatusCode.NOT_FOUND, "Autherization Failed")
-        
-        
-        
-        
-        
+    
+         
+         
 # Take profile data
 
 def profile_data(id, profile_id, context):
@@ -230,8 +235,6 @@ def profile_data(id, profile_id, context):
     except CustomUser.DoesNotExist:
         context.abort(StatusCode.PERMISSION_DENIED, "User not found")
         
-    
-    
     
     
     
@@ -290,13 +293,11 @@ def update_profile_data(request, context):
     
     
             
-        
 # Google auth
 
 def google_user(email, full_name, context):
     try:
         user = CustomUser.objects.get(email=email)
-        
     except CustomUser.DoesNotExist:
         user, created = CustomUser.objects.get_or_create(email=email,
                                                          full_name=full_name,
@@ -304,24 +305,27 @@ def google_user(email, full_name, context):
                                                          is_verified = True,
                                                          is_superuser = False
                                                          )
-
-    
     if not user.is_verified:
         context.abort(StatusCode.PERMISSION_DENIED, "User not verified")
-
-    
     if user.is_superuser:
         context.abort(StatusCode.PERMISSION_DENIED, "Admin can't access")
 
-    payload = {
+
+    access_payload = {
         'id': user.id,
-        'exp': timezone.now() + timezone.timedelta(days=2),
+        'exp': timezone.now() + timezone.timedelta(minutes=1), 
         'iat': timezone.now(),
     }
-    token = jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
 
-    return user, token
-
+    refresh_payload = {
+        'id': user.id,
+        'exp': timezone.now() + timezone.timedelta(days=15),  
+        'iat': timezone.now(),
+    }
+    
+    access_token = jwt.encode(access_payload, settings.SECRET_KEY, algorithm="HS256")
+    refresh_token = jwt.encode(refresh_payload, settings.SECRET_KEY, algorithm="HS256")
+    return user, access_token, refresh_token
 
 
 
@@ -344,8 +348,6 @@ def forgot_email(email, context):
         
         
         
-        
-
 # Change password
 
 def change_password(email, password, context):
@@ -365,9 +367,7 @@ def change_password(email, password, context):
         context.abort(StatusCode.NOT_FOUND, "User is not found plese check your email")
         
         
-        
-        
-        
+            
         
 # Get user profile image
 
@@ -418,8 +418,6 @@ def unique_post_data(user_id, context):
         
         
         
-        
-        
 # Take comment user profile
 
 def comment_profile(user_id, context):
@@ -442,8 +440,9 @@ def comment_profile(user_id, context):
         
         
         
+        
+        
 # User Follow
-
 
 def user_follow(user_id, folllow_user_id, context):
     try:
@@ -476,7 +475,6 @@ def user_follow(user_id, folllow_user_id, context):
 
 # search User
 
-
 def search_user(user_id, query, context):
     try:
         all_users = []
@@ -497,6 +495,116 @@ def search_user(user_id, query, context):
         return all_users
     except CustomUser.DoesNotExist:
         context.abort(StatusCode.NOT_FOUND, "Users not found")
+        
+        
+        
+        
+# Get all followers and followings
+
+def get_friends(user_id, context):
+    try:
+        main_user = CustomUser.objects.get(id=user_id)
+        all_follower = []
+        all_following = []
+        
+        try:
+            followers = Following.objects.filter(followed=main_user, is_active=True, is_delete=False)
+            for folower in followers:
+                user = CustomUser.objects.get(id = folower.follower.id)
+                
+                try:
+                    profile = UserProfile.objects.get(user=user)
+                    profile_image_url = profile.profile_image.url if profile.profile_image else ''
+                except UserProfile.DoesNotExist:
+                    profile_image_url = ''
+                
+                
+                all_follower.append(
+                    user_service_pb2.Friend(
+                        id = user.id,
+                        full_name = user.full_name,
+                        user_name = user.username,
+                        user_profile = profile_image_url
+                    ))
+        
+        except Following.DoesNotExist:
+            all_follower=[]
+            
+        try:
+            followed = Following.objects.filter(follower=main_user, is_active=True, is_delete=False)
+        
+            for folow in followed:
+                user = CustomUser.objects.get(id = folow.followed.id)
+                try:
+                    profile = UserProfile.objects.get(user=user)
+                    profile_image_url = profile.profile_image.url if profile.profile_image else ''
+                except UserProfile.DoesNotExist:
+                    profile_image_url = ''
+                
+                all_following.append(
+                    user_service_pb2.Friend(
+                        id = user.id,
+                        full_name = user.full_name,
+                        user_name = user.username,
+                        user_profile = profile_image_url
+                    ))
+        except Following.DoesNotExist:
+            all_following = []
+            
+            
+        return {
+            "follower":all_follower,
+            "followed":all_following
+        }
+            
+    except CustomUser.DoesNotExist:
+        context.abort(StatusCode.NOT_FOUND, "Users not found")
+        
+        
+        
+        
+        
+# Create new access token
+
+def refresh_check(token, context):
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+        user_id = payload['id']
+        
+        try:
+            user = CustomUser.objects.filter(id=user_id).first()
+        except CustomUser.DoesNotExist:
+            context.abort(StatusCode.NOT_FOUND, "Autherization Failed")
+        
+        if not user:
+            context.abort(StatusCode.PERMISSION_DENIED, "User not found")
+        
+        access_payload = {
+            'id': user_id,
+            'exp': timezone.now() + timezone.timedelta(minutes=15), 
+            'iat': timezone.now(),
+        }
+
+        refresh_payload = {
+            'id': user_id,
+            'exp': timezone.now() + timezone.timedelta(days=15),  
+            'iat': timezone.now(),
+        }
+        
+        access_token = jwt.encode(access_payload, settings.SECRET_KEY, algorithm="HS256")
+        refresh_token = jwt.encode(refresh_payload, settings.SECRET_KEY, algorithm="HS256")
+        
+        return {
+            'access_token':str(access_token),
+            'refresh_token': str(refresh_token),
+            }
+             
+    except jwt.ExpiredSignatureError:
+        context.abort(StatusCode.UNAUTHENTICATED, "Token has expired")
+                  
+    
+            
+        
 
         
             

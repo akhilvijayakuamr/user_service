@@ -5,10 +5,8 @@ import warnings
 
 from . import user_service_pb2 as user__service__pb2
 
-GRPC_GENERATED_VERSION = '1.65.5'
+GRPC_GENERATED_VERSION = '1.66.0'
 GRPC_VERSION = grpc.__version__
-EXPECTED_ERROR_RELEASE = '1.66.0'
-SCHEDULED_RELEASE_DATE = 'August 6, 2024'
 _version_not_supported = False
 
 try:
@@ -18,15 +16,12 @@ except ImportError:
     _version_not_supported = True
 
 if _version_not_supported:
-    warnings.warn(
+    raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
         + f' but the generated code in user_service_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
-        + f' This warning will become an error in {EXPECTED_ERROR_RELEASE},'
-        + f' scheduled for release on {SCHEDULED_RELEASE_DATE}.',
-        RuntimeWarning
     )
 
 
@@ -128,6 +123,21 @@ class UserServiceStub(object):
                 '/user_service.UserService/UserSearch',
                 request_serializer=user__service__pb2.UserSearchRequest.SerializeToString,
                 response_deserializer=user__service__pb2.UserSearchResponse.FromString,
+                _registered_method=True)
+        self.GetAllFriends = channel.unary_unary(
+                '/user_service.UserService/GetAllFriends',
+                request_serializer=user__service__pb2.GetAllFriendsRequest.SerializeToString,
+                response_deserializer=user__service__pb2.GetAllFriendsResponse.FromString,
+                _registered_method=True)
+        self.CreateNewToken = channel.unary_unary(
+                '/user_service.UserService/CreateNewToken',
+                request_serializer=user__service__pb2.CreateNewTokenRequest.SerializeToString,
+                response_deserializer=user__service__pb2.CreateNewTokenResponse.FromString,
+                _registered_method=True)
+        self.DashboardUserDetails = channel.unary_unary(
+                '/user_service.UserService/DashboardUserDetails',
+                request_serializer=user__service__pb2.DashboardUserDetailsRequest.SerializeToString,
+                response_deserializer=user__service__pb2.DashboardUserDetailsResponse.FromString,
                 _registered_method=True)
 
 
@@ -242,6 +252,24 @@ class UserServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetAllFriends(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CreateNewToken(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DashboardUserDetails(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_UserServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -334,6 +362,21 @@ def add_UserServiceServicer_to_server(servicer, server):
                     servicer.UserSearch,
                     request_deserializer=user__service__pb2.UserSearchRequest.FromString,
                     response_serializer=user__service__pb2.UserSearchResponse.SerializeToString,
+            ),
+            'GetAllFriends': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetAllFriends,
+                    request_deserializer=user__service__pb2.GetAllFriendsRequest.FromString,
+                    response_serializer=user__service__pb2.GetAllFriendsResponse.SerializeToString,
+            ),
+            'CreateNewToken': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateNewToken,
+                    request_deserializer=user__service__pb2.CreateNewTokenRequest.FromString,
+                    response_serializer=user__service__pb2.CreateNewTokenResponse.SerializeToString,
+            ),
+            'DashboardUserDetails': grpc.unary_unary_rpc_method_handler(
+                    servicer.DashboardUserDetails,
+                    request_deserializer=user__service__pb2.DashboardUserDetailsRequest.FromString,
+                    response_serializer=user__service__pb2.DashboardUserDetailsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -822,6 +865,87 @@ class UserService(object):
             '/user_service.UserService/UserSearch',
             user__service__pb2.UserSearchRequest.SerializeToString,
             user__service__pb2.UserSearchResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetAllFriends(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/GetAllFriends',
+            user__service__pb2.GetAllFriendsRequest.SerializeToString,
+            user__service__pb2.GetAllFriendsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CreateNewToken(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/CreateNewToken',
+            user__service__pb2.CreateNewTokenRequest.SerializeToString,
+            user__service__pb2.CreateNewTokenResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DashboardUserDetails(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/user_service.UserService/DashboardUserDetails',
+            user__service__pb2.DashboardUserDetailsRequest.SerializeToString,
+            user__service__pb2.DashboardUserDetailsResponse.FromString,
             options,
             channel_credentials,
             insecure,
