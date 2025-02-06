@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from .models import CustomUser, UserProfile, Following
 from proto import user_service_pb2
-from proto import user_service_pb2_grpc
 from .serializers import CustomUserSerializer, VerifyUserSerializer
 from grpc import StatusCode
 from .email import send_otp_mail
@@ -11,6 +10,7 @@ from django.conf import settings
 import uuid
 import time
 from django.core.files.base import ContentFile
+
 
 # Create your views here.
 
@@ -123,7 +123,7 @@ def authenticate_user(email, password, provider, context):
 
     access_payload = {
         'id': user.id,
-        'exp': timezone.now() + timezone.timedelta(minutes=1), 
+        'exp': timezone.now() + timezone.timedelta(minutes=15), 
         'iat': timezone.now(),
     }
 
@@ -358,6 +358,7 @@ def change_password(email, password, context):
             context.abort(StatusCode.NOT_FOUND, "User is not found plese check your email")
             
         user.set_password(password)
+        user.save()
         
         return {
              'message': 'Successfully Password Changed'
@@ -601,8 +602,12 @@ def refresh_check(token, context):
              
     except jwt.ExpiredSignatureError:
         context.abort(StatusCode.UNAUTHENTICATED, "Token has expired")
-                  
-    
+        
+        
+        
+        
+        
+
             
         
 

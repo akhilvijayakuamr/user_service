@@ -26,7 +26,7 @@ def authenticate_admin(email, password, context):
     
     access_payload = {
         'id': user.id,
-        'exp': timezone.now() + timezone.timedelta(minutes=1), 
+        'exp': timezone.now() + timezone.timedelta(minutes=15), 
         'iat': timezone.now(),
     }
 

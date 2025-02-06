@@ -71,4 +71,16 @@ class Following(models.Model):
         
         
         
+# # subscription
+
+
+# class Subscription(models.Model):
+#     customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='subscriptions')
+#     source_id = models.CharField(max_length=255, blank=True, null=True)
+#     currency = models.CharField(max_length=255, blank=True, null=True)
+#     amount = models.FloatField(blank=True, null=True)
+#     started_at = models.DateTimeField(default=timezone.now)
+        
+        
+        
 
